@@ -1,0 +1,79 @@
+﻿<Page
+    x:Class="NEM.Views.HomeAbout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:datamodel="using:NEM.DataModel"
+    RequestedTheme="{x:Bind HomeTheme}"
+    mc:Ignorable="d">
+
+    <Grid Style="{x:Bind HomeBackground}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Wider">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="900" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Logo.HorizontalAlignment" Value="Left" ></Setter>
+                        <Setter Target="Search.HorizontalAlignment" Value="Right" ></Setter>
+                        <Setter Target="Search.Margin" Value="0,68,24,0" ></Setter>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Narrower">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Logo.HorizontalAlignment" Value="Center" ></Setter>
+                        <Setter Target="Logo.HorizontalAlignment" Value="Center" ></Setter>
+                        <Setter Target="Search.Margin" Value="0,140,24,0" ></Setter>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VeryNarrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="320" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Logo.HorizontalAlignment" Value="Center" ></Setter>
+                        <Setter Target="Logo.HorizontalAlignment" Value="Center" ></Setter>
+                        <Setter Target="Search.Margin" Value="0,140,24,0" ></Setter>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ParallaxView x:Name="paraimage" Grid.Row="0" HorizontalShift="400" VerticalAlignment="Bottom" Margin="0,-28,0,0">
+            <Image 
+                   Margin="-0,0,0,0"
+                   Stretch="UniformToFill"
+                   MinHeight="690">
+                <Image.Source>
+                    <BitmapImage UriSource="{x:Bind ParallaxImage}" />
+                </Image.Source>
+            </Image>
+        </ParallaxView>
+
+        <Image x:Name="Logo" 
+               VerticalAlignment="Top" 
+               Margin="0,30,0,0"
+               Grid.Row="0"
+               Width="370">
+            <Image.Source>
+                <!--<SvgImageSource UriSource="{x:Bind LogoSource}" />-->
+                <BitmapImage UriSource="{x:Bind LogoSource}" />
+            </Image.Source>
+        </Image>
+
+        <AutoSuggestBox x:Name="Search" Grid.Row="0" Width="296" PlaceholderText="Search Nymi Info" Margin="0,68,24,0" QueryIcon="Find"
+                        TextChanged="AutoSuggestBox_TextChanged"
+                        SuggestionChosen="AutoSuggestBox_SuggestionChosen"
+                        RequestedTheme="Light" />
+     
+        <TextBlock Grid.Row="1" VerticalAlignment="Top" Style="{ThemeResource SubtitleTextBlockStyle}" FontWeight="Medium" Margin="24,12,0,32" Text="Home / About ... " />
+    </Grid>
+</Page>
