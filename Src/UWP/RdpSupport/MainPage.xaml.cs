@@ -11,9 +11,12 @@ namespace RdpSupport
     DisplayRequest _disp = new DisplayRequest();
     DateTime _since;
 
-    public MainPage() => InitializeComponent();
+        public MainPage()
+        {
+            InitializeComponent();
+        }
 
-    async void Page_Loaded(object s, RoutedEventArgs e) { await Task.Delay(999); onStart(s, e); }
+        async void Page_Loaded(object s, RoutedEventArgs e) { await Task.Delay(999); onStart(s, e); }
 
     void onStart(object s, RoutedEventArgs e) { _disp.RequestActive(); checkBox.IsChecked = true; dd(checkBox.IsChecked == true); textBlock.Text = $"Since {(_since = DateTime.Now):HH:mm}"; }
     void onStop(object se, RoutedEventArgs e) { _disp.RequestRelease(); checkBox.IsChecked = false; dd(checkBox.IsChecked == true); textBlock.Text = $"For {(DateTime.Now - _since):hh\\:mm}"; }

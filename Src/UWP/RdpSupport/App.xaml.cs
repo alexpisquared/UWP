@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace RdpSupport
@@ -68,6 +60,10 @@ namespace RdpSupport
                     // parameter
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
+
+                ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(height: 50, width: 200)); //tu: 2021                192x48 is teh absolute minimum
+                ApplicationView.GetForCurrentView().Title = $"{DateTime.Now:H:mm}";
+
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
