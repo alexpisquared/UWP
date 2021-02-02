@@ -61,7 +61,7 @@ namespace RdpSupport
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
 
-                ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(height: 50, width: 200)); //tu: 2021                192x48 is teh absolute minimum
+                ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(width: 200, height: 80)); //tu: 2021                192x48 is the absolute minimum
                 ApplicationView.GetForCurrentView().Title = $"{DateTime.Now:H:mm}";
 
                 // Ensure the current window is active
