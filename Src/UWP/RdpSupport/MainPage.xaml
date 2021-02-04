@@ -10,7 +10,7 @@
 
   <Viewbox Margin="0 40 0 0">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-      <CheckBox  Margin="10" x:Name="checkBox"      Content="The Switch" Checked="onStart" Unchecked="onStop" BorderBrush="Red" />
+      <CheckBox  Margin="10" x:Name="checkBox"      Content="The Switch" Checked="onStart" Unchecked="onStop" />
       <TextBlock Margin="10" x:Name="textBlock"     Text="Since ..." HorizontalAlignment="Center" />
       <!--
       <Button    Margin="10" x:Name="buttonStart"   Content="Start" Click="onStart"  Visibility="Collapsed" />
