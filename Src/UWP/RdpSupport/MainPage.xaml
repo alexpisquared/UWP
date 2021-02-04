@@ -2,21 +2,21 @@
       xmlns:local="using:RdpSupport" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       d:DesignWidth="200" d:DesignHeight="120" Loaded="Page_Loaded" >
 
-    <Page.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="10" />
-        </Style>
-    </Page.Resources>
+  <Page.Resources>
+    <Style TargetType="Button">
+      <Setter Property="Margin" Value="10" />
+    </Style>
+  </Page.Resources>
 
-    <Viewbox Margin="0 40 0 0">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <CheckBox  Margin="10" x:Name="checkBox"      Content="The Switch" Checked="onStart" Unchecked="onStop" BorderBrush="Red" />
-            <TextBlock Margin="10" x:Name="textBlock"     Text="Since ..." HorizontalAlignment="Center" />
-            <Button    Margin="10" x:Name="buttonStart"   Content="Start" Click="onStart"  Visibility="Collapsed" />
-            <Button    Margin="10" x:Name="buttonStop"    Content="Stop"  Click="onStop"   Visibility="Collapsed" />
-            <!--
+  <Viewbox Margin="0 40 0 0">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+      <CheckBox  Margin="10" x:Name="checkBox"      Content="The Switch" Checked="onStart" Unchecked="onStop" BorderBrush="Red" />
+      <TextBlock Margin="10" x:Name="textBlock"     Text="Since ..." HorizontalAlignment="Center" />
+      <!--
+      <Button    Margin="10" x:Name="buttonStart"   Content="Start" Click="onStart"  Visibility="Collapsed" />
+      <Button    Margin="10" x:Name="buttonStop"    Content="Stop"  Click="onStop"   Visibility="Collapsed" />
       <Button    Margin="10" x:Name="buttonExit"    Content="X"     Click="onExit"   Visibility="Visible"   />
       -->
-        </StackPanel>
-    </Viewbox>
+    </StackPanel>
+  </Viewbox>
 </Page>
