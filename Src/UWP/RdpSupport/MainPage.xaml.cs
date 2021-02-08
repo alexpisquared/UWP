@@ -1,64 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation;
 using Windows.System.Display;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using System.Diagnostics;
 
 namespace RdpSupport
 {
   public sealed partial class MainPage : Page
   {
     readonly DisplayRequest _dr = new DisplayRequest();
+    readonly DispatcherTimer _timer = new DispatcherTimer();
     DateTime _since;
-    DispatcherTimer _timer = new DispatcherTimer();
+    Point _prevPosition;
 
     public MainPage()
     {
       InitializeComponent();
       CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-      _timer.Tick += _timer_Tick;
-      _timer.Interval = TimeSpan.FromSeconds(90);
+      _timer.Tick += onTick;
+      _timer.Interval = TimeSpan.FromSeconds(090);
       _timer.Start();
+      textBloc3.Text = $"{DateTime.Now:HH:mm:ss}\r\n";
     }
 
-    void _timer_Tick(object sender, object e)
+    async void Page_Loaded(object s, RoutedEventArgs e) { await Task.Delay(999); onStart(s, e); _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition; }
+    void onTick(object s, object e)
     {
       if (DateTime.Now.Hour >= 20 && checkBox.IsChecked == true)
         setDR(false);
+
+      var psn = CoreWindow.GetForCurrentThread().PointerPosition;
+      if (psn == _prevPosition)
+      {
+        textBloc3.Text += $"{DateTime.Now:HH:mm:ss}  Idle\t{_prevPosition} \r\n";
+        Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
+      }
+      else
+      {
+        textBloc3.Text += $"{DateTime.Now:HH:mm:ss}  Busy\t{_prevPosition} \r\n";
+      }
+      _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition;
+      Debug.WriteLine($"** XY: {_prevPosition}");
     }
-
-    async void Page_Loaded(object s, RoutedEventArgs e) { await Task.Delay(999); onStart(s, e); }
-
     void onStart(object s, RoutedEventArgs e) => setDR(true);
     void onStop(object se, RoutedEventArgs e) => setDR(false);
-    void onMove(object s, RoutedEventArgs e)
-    {
-      var pointerPosition = Windows.UI.Core.CoreWindow.GetForCurrentThread().PointerPosition;
-      Debug.WriteLine($"** XY: {pointerPosition}");
-
-      Window.Current.CoreWindow.PointerPosition = new Point(pointerPosition.X + 100, pointerPosition.Y);
-
-      //Cursor = new Cursor(Cursor.Current.Handle);
-      //Cursor.Position = new Point(Cursor.Position.X - 50, Cursor.Position.Y - 50);
-      //Cursor.Clip = new Rectangle(this.Location, this.Size);
-    }
+    void onMove(object s, RoutedEventArgs e) { }
+    void onExit(object s, RoutedEventArgs e) { }
 
     void setDR(bool isOn)
     {
