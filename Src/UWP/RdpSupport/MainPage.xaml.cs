@@ -32,15 +32,20 @@ namespace RdpSupport
       _timer.Interval = TimeSpan.FromSeconds(_periodSec);
       _timer.Start();
       textBloc3.Text = $"{DateTime.Now:HH:mm:ss}\r\n";
-
-      _synth.Voice = SpeechSynthesizer.AllVoices.First(gender => gender.Gender == VoiceGender.Female);
-      foreach (VoiceInformation vi in SpeechSynthesizer.AllVoices)
-      {
-        Debug.WriteLine($"** Voice: {vi.DisplayName,-16}{vi.Description}");
-      }
     }
 
-    async void Page_Loaded(object s, RoutedEventArgs e) { await Task.Delay(999); onStart(s, e); _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition; }
+    async void Page_Loaded(object s, RoutedEventArgs e)
+    {
+      await Task.Delay(999); onStart(s, e); _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition;
+      _synth.Voice = SpeechSynthesizer.AllVoices.LastOrDefault(gender => gender.Gender == VoiceGender.Female) ?? SpeechSynthesizer.DefaultVoice;
+      foreach (VoiceInformation vi in SpeechSynthesizer.AllVoices)
+      {
+        textBloc3.Text += $"{vi.Description}\r\n";
+        Debug.WriteLine(textBloc3.Text);
+      }
+
+      textBloc3.Text += $"==> {_synth.Voice.Description}\r\n";
+    }
     async void onTick(object s, object e)
     {
       if (DateTime.Now.Hour >= 20 && checkBox.IsChecked == true)
