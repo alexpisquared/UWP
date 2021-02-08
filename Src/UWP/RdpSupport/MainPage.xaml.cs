@@ -17,13 +17,13 @@ namespace RdpSupport
     readonly DispatcherTimer _timer = new DispatcherTimer();
     DateTime _since;
     Point _prevPosition;
-
+    int _sound = 0;
     public MainPage()
     {
       InitializeComponent();
       CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
       _timer.Tick += onTick;
-      _timer.Interval = TimeSpan.FromSeconds(090);
+      _timer.Interval = TimeSpan.FromSeconds(60);
       _timer.Start();
       textBloc3.Text = $"{DateTime.Now:HH:mm:ss}\r\n";
     }
@@ -34,11 +34,19 @@ namespace RdpSupport
       if (DateTime.Now.Hour >= 20 && checkBox.IsChecked == true)
         setDR(false);
 
-      var psn = CoreWindow.GetForCurrentThread().PointerPosition;
-      if (psn == _prevPosition)
+      if (CoreWindow.GetForCurrentThread().PointerPosition == _prevPosition)
       {
-        textBloc3.Text += $"{DateTime.Now:HH:mm:ss}  Idle\t{_prevPosition} \r\n";
         Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
+        if (CoreWindow.GetForCurrentThread().PointerPosition == _prevPosition)
+        {
+          ElementSoundPlayer.State = ElementSoundPlayerState.On;
+          var sss = (ElementSoundKind)((_sound++) % (1 + (int)ElementSoundKind.GoBack));
+          textBloc3.Text += $"{DateTime.Now:HH:mm:ss}  Unhinged\t{_prevPosition}\t{sss} \r\n";
+          ElementSoundPlayer.Play(ElementSoundKind.Invoke);
+          Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
+        }
+        else
+          textBloc3.Text += $"{DateTime.Now:HH:mm:ss}  Fixed\t{_prevPosition} \r\n";
       }
       else
       {
