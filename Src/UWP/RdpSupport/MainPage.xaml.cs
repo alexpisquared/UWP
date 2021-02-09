@@ -15,7 +15,7 @@ namespace RdpSupport
 {
   public sealed partial class MainPage : Page
   {
-    const int _periodSec = 60;
+    const int _periodSec = 60, _till=20;
     readonly MediaElement _mediaplayer = new MediaElement();
     readonly DisplayRequest _dr = new DisplayRequest();
     readonly DispatcherTimer _timer = new DispatcherTimer();
@@ -31,7 +31,6 @@ namespace RdpSupport
       _timer.Tick += onTick;
       _timer.Interval = TimeSpan.FromSeconds(_periodSec);
       _timer.Start();
-      textBloc3.Text = $"{DateTime.Now:HH:mm:ss}\r\n";
     }
 
     async void Page_Loaded(object s, RoutedEventArgs e)
@@ -40,15 +39,15 @@ namespace RdpSupport
       _synth.Voice = SpeechSynthesizer.AllVoices.LastOrDefault(gender => gender.Gender == VoiceGender.Female) ?? SpeechSynthesizer.DefaultVoice;
       foreach (VoiceInformation vi in SpeechSynthesizer.AllVoices)
       {
-        textBloc3.Text += $"{vi.Description}\r\n";
-        Debug.WriteLine(textBloc3.Text);
+        tbkLog.Text += $"{vi.Description}\r\n";
+        Debug.WriteLine(tbkLog.Text);
       }
 
-      textBloc3.Text += $"==> {_synth.Voice.Description}\r\n";
+      tbkLog.Text += $"==> {_synth.Voice.Description}\r\n";
     }
     async void onTick(object s, object e)
     {
-      if (DateTime.Now.Hour >= 20 && checkBox.IsChecked == true)
+      if (DateTime.Now.Hour >= _till && checkBox.IsChecked == true)
         setDR(false);
 
       if (CoreWindow.GetForCurrentThread().PointerPosition == _prevPosition)
@@ -58,17 +57,17 @@ namespace RdpSupport
         {
           ElementSoundPlayer.State = ElementSoundPlayerState.On;
           var sss = (ElementSoundKind)((_sound++) % (1 + (int)ElementSoundKind.GoBack));
-          textBloc3.Text += $"{DateTime.Now:HH:mm:ss}  Unhinged\t{_prevPosition}\t{sss} \r\n";
+          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Unhinged\t{_prevPosition}\t{sss} \r\n";
           await readText("I need focus");
           ElementSoundPlayer.Play(ElementSoundKind.Invoke);
           Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
         }
         else
-          textBloc3.Text += $"{DateTime.Now:HH:mm:ss}  Fixed\t{_prevPosition} \r\n";
+          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Fixed\t{_prevPosition} \r\n";
       }
       else
       {
-        textBloc3.Text += $"{DateTime.Now:HH:mm:ss}  Busy\t{_prevPosition} \r\n";
+        tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Busy\t{_prevPosition} \r\n";
       }
       _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition;
       Debug.WriteLine($"** XY: {_prevPosition}");
@@ -82,11 +81,16 @@ namespace RdpSupport
     {
       checkBox.IsChecked = isOn;
       if (isOn)
+      {
         _dr.RequestActive();
+        tbkLog.Text = $"{DateTime.Now:HH:mm:ss}\r\n";
+      }
       else
+      {
         _dr.RequestRelease();
+      }
 
-      textBlock.Text = isOn ? $"On since {(_since = DateTime.Now):HH:mm}" : $"Was On for {(DateTime.Now - _since):hh\\:mm}";
+      tbkBig.Text = isOn ? $"On {(_since = DateTime.Now):HH:mm} ÷ {_till}:00" : $"Was On for {(DateTime.Now - _since):hh\\:mm}";
       ApplicationView.GetForCurrentView().Title = isOn ? $"{(_since = DateTime.Now):HH:mm}···" : $"Off";
 
       //buttonStart.Visibility = v ? Visibility.Collapsed : Visibility.Visible;
