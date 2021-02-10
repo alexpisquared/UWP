@@ -16,7 +16,11 @@ namespace RdpSupport
 {
   public sealed partial class MainPage : Page
   {
+#if DEBUG
+    const int _periodSec = 2, _till = 20;
+#else
     const int _periodSec = 60, _till = 20;
+#endif
     readonly MediaElement _mediaplayer = new MediaElement();
     readonly DisplayRequest _dr = new DisplayRequest();
     readonly DispatcherTimer _timer = new DispatcherTimer();
@@ -62,15 +66,15 @@ namespace RdpSupport
         {
           _synth.Voice = _av[(_voice++) % _av.Count];
           await readText("I need focus");
-          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Unhinged\t{_prevPosition,12}\t{_synth.Voice.Description} \r\n";
+          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Focus!   \t{_prevPosition,12}\t{_synth.Voice.Description} \r\n";
           Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
         }
         else
-          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Fixed\t{_prevPosition} \r\n";
+          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Remedied.\t{_prevPosition,12} \r\n";
       }
       else
       {
-        tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Busy\t{_prevPosition} \r\n";
+        tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  No need. \t{_prevPosition,12} \r\n";
       }
       _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition;
       Debug.WriteLine($"** XY: {_prevPosition}");
