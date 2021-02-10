@@ -10,12 +10,12 @@
 
   <Viewbox Margin="0 40 0 0">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-      <CheckBox  Margin="10" x:Name="checkBox" Content="The Switch" HorizontalAlignment="Center" Checked="onStart" Unchecked="onStop" />
+      <CheckBox  Margin="10" x:Name="checkBox" Content="The Switch" HorizontalAlignment="Center" Checked="onStrt" Unchecked="onStop" />
       <TextBlock Margin="10" x:Name="tbkBig"      Text="Since ..."  HorizontalAlignment="Center" />
       <TextBlock Margin="10" x:Name="tbkLog"      Text="Log"        HorizontalAlignment="Center" FontSize="1" HorizontalTextAlignment="Left" />
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
-        <Button    Margin="10" x:Name="buttonStart"   Content="Start" Click="onStart" Visibility="Collapsed" />
-        <Button    Margin="10" x:Name="buttonStop"    Content="Stop"  Click="onStop"  Visibility="Collapsed" />
+        <Button    Margin="10" x:Name="buttonStart"   Content="Start" Click="onStrt" Visibility="Collapsed" />
+        <Button    Margin="10" x:Name="buttonStop"    Content="Stop"  Click="onStop" Visibility="Collapsed" />
         <Button    Margin="10" x:Name="buttonMove"    Content="Move"  Click="onMove"  />
         <Button    Margin="10" x:Name="buttonExit"    Content="X"     Click="onExit"  />
         <!--

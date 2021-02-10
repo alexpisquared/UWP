@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,14 +16,15 @@ namespace RdpSupport
 {
   public sealed partial class MainPage : Page
   {
-    const int _periodSec = 60, _till=20;
+    const int _periodSec = 60, _till = 20;
     readonly MediaElement _mediaplayer = new MediaElement();
     readonly DisplayRequest _dr = new DisplayRequest();
     readonly DispatcherTimer _timer = new DispatcherTimer();
+    readonly SpeechSynthesizer _synth = new SpeechSynthesizer();
+    readonly IReadOnlyList<VoiceInformation> _av = SpeechSynthesizer.AllVoices;
     DateTime _since;
     Point _prevPosition;
-    int _sound = 0;
-    SpeechSynthesizer _synth = new SpeechSynthesizer();
+    int _voice = 0;
 
     public MainPage()
     {
@@ -35,15 +37,18 @@ namespace RdpSupport
 
     async void Page_Loaded(object s, RoutedEventArgs e)
     {
-      await Task.Delay(999); onStart(s, e); _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition;
-      _synth.Voice = SpeechSynthesizer.AllVoices.LastOrDefault(gender => gender.Gender == VoiceGender.Female) ?? SpeechSynthesizer.DefaultVoice;
-      foreach (VoiceInformation vi in SpeechSynthesizer.AllVoices)
+      await Task.Delay(999);
+      onStrt(s, e);
+      _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition;
+
+      _synth.Voice = _av.LastOrDefault(gender => gender.Gender == VoiceGender.Female) ?? SpeechSynthesizer.DefaultVoice;
+      foreach (var vi in _av)
       {
-        tbkLog.Text += $"{vi.Description}\r\n";
+        tbkLog.Text += $"{vi.Description.Replace("-", "\t")}\r\n";
         Debug.WriteLine(tbkLog.Text);
       }
 
-      tbkLog.Text += $"==> {_synth.Voice.Description}\r\n";
+      ElementSoundPlayer.State = ElementSoundPlayerState.On;
     }
     async void onTick(object s, object e)
     {
@@ -55,11 +60,9 @@ namespace RdpSupport
         Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
         if (CoreWindow.GetForCurrentThread().PointerPosition == _prevPosition)
         {
-          ElementSoundPlayer.State = ElementSoundPlayerState.On;
-          var sss = (ElementSoundKind)((_sound++) % (1 + (int)ElementSoundKind.GoBack));
-          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Unhinged\t{_prevPosition}\t{sss} \r\n";
+          _synth.Voice = _av[(_voice++) % _av.Count];
           await readText("I need focus");
-          ElementSoundPlayer.Play(ElementSoundKind.Invoke);
+          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Unhinged\t{_prevPosition,12}\t{_synth.Voice.Description} \r\n";
           Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
         }
         else
@@ -72,10 +75,10 @@ namespace RdpSupport
       _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition;
       Debug.WriteLine($"** XY: {_prevPosition}");
     }
-    void onStart(object s, RoutedEventArgs e) => setDR(true);
-    void onStop(object se, RoutedEventArgs e) => setDR(false);
-    void onMove(object s, RoutedEventArgs e) { }
-    void onExit(object s, RoutedEventArgs e) { }
+    void onStrt(object s, RoutedEventArgs e) => setDR(true);
+    void onStop(object s, RoutedEventArgs e) => setDR(false);
+    void onMove(object s, RoutedEventArgs e) => ElementSoundPlayer.Play(ElementSoundKind.Show);
+    void onExit(object s, RoutedEventArgs e) => ElementSoundPlayer.Play(ElementSoundKind.Hide);
 
     void setDR(bool isOn)
     {
@@ -84,10 +87,12 @@ namespace RdpSupport
       {
         _dr.RequestActive();
         tbkLog.Text = $"{DateTime.Now:HH:mm:ss}\r\n";
+        ElementSoundPlayer.Play(ElementSoundKind.Show);
       }
       else
       {
         _dr.RequestRelease();
+        ElementSoundPlayer.Play(ElementSoundKind.Hide);
       }
 
       tbkBig.Text = isOn ? $"On {(_since = DateTime.Now):HH:mm} ÷ {_till}:00" : $"Was On for {(DateTime.Now - _since):hh\\:mm}";
