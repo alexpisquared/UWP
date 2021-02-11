@@ -17,9 +17,11 @@ namespace RdpSupport
   public sealed partial class MainPage : Page
   {
 #if DEBUG
-    const int _periodSec = 2, _till = 20;
+    const int _periodSec = 1, _till = 20;
+    int _dx = 50, _dy = 50;
 #else
     const int _periodSec = 60, _till = 20;
+    int _dx = 1, _dy = 1;
 #endif
     readonly MediaElement _mediaplayer = new MediaElement();
     readonly DisplayRequest _dr = new DisplayRequest();
@@ -61,13 +63,23 @@ namespace RdpSupport
 
       if (CoreWindow.GetForCurrentThread().PointerPosition == _prevPosition)
       {
-        Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
+        Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + _dx, _prevPosition.Y + _dy);
         if (CoreWindow.GetForCurrentThread().PointerPosition == _prevPosition)
         {
-          _synth.Voice = _av[(_voice++) % _av.Count];
-          await readText("I need focus");
-          tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Focus!   \t{_prevPosition,12}\t{_synth.Voice.Description} \r\n";
-          Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
+          _dx = -_dx;
+          Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + _dx, _prevPosition.Y + _dy);
+          if (CoreWindow.GetForCurrentThread().PointerPosition == _prevPosition)
+          {
+            _dy = -_dy;
+            Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + _dx, _prevPosition.Y + _dy);
+          }
+          if (CoreWindow.GetForCurrentThread().PointerPosition == _prevPosition)
+          {
+            _synth.Voice = _av[(_voice++) % _av.Count];
+            await readText("I need focus");
+            tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Focus!   \t{_prevPosition,12}\t{_synth.Voice.Description} \r\n";
+            Window.Current.CoreWindow.PointerPosition = new Point(_prevPosition.X + 1, _prevPosition.Y + 1);
+          }
         }
         else
           tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  Remedied.\t{_prevPosition,12} \r\n";
@@ -76,6 +88,7 @@ namespace RdpSupport
       {
         tbkLog.Text += $"{DateTime.Now:HH:mm:ss}  No need. \t{_prevPosition,12} \r\n";
       }
+
       _prevPosition = CoreWindow.GetForCurrentThread().PointerPosition;
       Debug.WriteLine($"** XY: {_prevPosition}");
     }
