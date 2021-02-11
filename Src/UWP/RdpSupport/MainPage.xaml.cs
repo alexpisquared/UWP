@@ -24,7 +24,7 @@ namespace RdpSupport
     int _dx = 1, _dy = 1;
 #endif
     readonly MediaElement _mediaplayer = new MediaElement();
-    readonly DisplayRequest _dr = new DisplayRequest();
+    readonly Insomniac _dr = new Insomniac();
     readonly DispatcherTimer _timer = new DispatcherTimer();
     readonly SpeechSynthesizer _synth = new SpeechSynthesizer();
     readonly IReadOnlyList<VoiceInformation> _av = SpeechSynthesizer.AllVoices;
@@ -41,7 +41,7 @@ namespace RdpSupport
       _timer.Start();
     }
 
-    async void Page_Loaded(object s, RoutedEventArgs e)
+    async void onLoaded(object s, RoutedEventArgs e)
     {
       await Task.Delay(999);
       onStrt(s, e);
